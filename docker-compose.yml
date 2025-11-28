@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: lurk-postgres
+    environment:
+      POSTGRES_DB: lurk_db
+      POSTGRES_USER: lurk_user
+      POSTGRES_PASSWORD: lurk_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - lurk-network
+    healthcheck:
+      test: ["CMD-SHELL", "-c", "pg_isready -U lurk_user -d lurk_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: lurk-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - lurk-network
+    command: redis-server --appendonly yes --appendfsync yes --save 900 1 --save-interval 60
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend FastAPI Application
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lurk-backend
+    environment:
+      - DATABASE_URL=postgresql://lurk_user:lurk_password@postgres:5432/lurk_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - JWT_SECRET_KEY=lurk_jwt_secret_key_change_in_production
+      - RAZORPAY_KEY_ID=rzp_test_1234567890
+      - RAZORPAY_KEY_SECRET=test_secret_1234567890
+      - RAZORPAY_WEBHOOK_SECRET=webhook_secret_1234567890
+      - AWS_ACCESS_KEY_ID=your_aws_access_key_here
+      - AWS_SECRET_ACCESS_KEY=your_aws_secret_key_here
+      - AWS_REGION=ap-south-1
+      - EMAIL_SOURCE=noreply@lurk.app
+      - SMS_SOURCE=LURK
+      - DEVELOPMENT=true
+      - ENVIRONMENT=development
+      - DEBUG=true
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - ~/.aws:/root/.aws:ro
+    networks:
+      - lurk-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend React Native Development Server (for web)
+  frontend-web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.web
+    container_name: lurk-frontend-web
+    environment:
+      - REACT_NATIVE_API_URL=http://localhost:8000
+      - REACT_NATIVE_ENVIRONMENT=development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - lurk-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm start
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  lurk-network:
+    driver: bridge
