@@ -1,0 +1,95 @@
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '13.0'
+install! 'cocoapods', :deterministic_uuids => false
+
+target 'LurkApp' do
+  config = use_native_modules!
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # Hermes is now enabled by default. Disable by setting this flag to false.
+    # Upgrading to 0.71.0 with Hermes enabled may cause a crash if you're using
+    # 3rd party libraries that are not yet Hermes-compatible. Please set this to
+    # false if you experience crashes.
+    :hermes_enabled => flags[:hermes_enabled],
+    :flipper_configuration => FlipperConfiguration.enabled,
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  # Vector Icons
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  # Firebase
+  pod 'Firebase/Core', '~> 10.20.0'
+  pod 'Firebase/Messaging', '~> 10.20.0'
+  pod 'Firebase/Analytics', '~> 10.20.0'
+
+  # Razorpay
+  pod 'razorpay-pod', '1.3.0'
+
+  # Stripe
+  pod 'Stripe', '~> 23.18.0'
+
+  target 'LurkAppTests' do
+    inherit! :complete
+  end
+
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+  end
+end
+
+# Add Vector Icons fonts
+target 'LurkApp' do
+  script_phase :name => 'Copy Vector Icons Fonts', :script => <<~'EOS'
+     #!/bin/sh
+      set -e
+      NODE_BINARY=node
+      ROOT_DIR=$(dirname "$0")
+      DEST_DIR="$SRCROOT/$PRODUCT_NAME/Resources/Fonts"
+      echo "Copying fonts to $DEST_DIR"
+      mkdir -p "$DEST_DIR"
+      # AntDesign
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf" "$DEST_DIR/"
+      # Entypo
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/Entypo.ttf" "$DEST_DIR/"
+      # EvilIcons
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf" "$DEST_DIR/"
+      # Feather
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/Feather.ttf" "$DEST_DIR/"
+      # FontAwesome
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf" "$DEST_DIR/"
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf" "$DEST_DIR/"
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf" "$DEST_DIR/"
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf" "$DEST_DIR/"
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/FontAwesome6_Brands.ttf" "$DEST_DIR/"
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/FontAwesome6_Regular.ttf" "$DEST_DIR/"
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/FontAwesome6_Solid.ttf" "$DEST_DIR/"
+      # Fontisto
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf" "$DEST_DIR/"
+      # Foundation
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/Foundation.ttf" "$DEST_DIR/"
+      # Ionicons
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf" "$DEST_DIR/"
+      # MaterialCommunityIcons
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf" "$DEST_DIR/"
+      # MaterialIcons
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf" "$DEST_DIR/"
+      # Octicons
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/Octicons.ttf" "$DEST_DIR/"
+      # SimpleLineIcons
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf" "$DEST_DIR/"
+      # Zocial
+      cp "$ROOT_DIR/../node_modules/react-native-vector-icons/Fonts/Zocial.ttf" "$DEST_DIR/"
+    EOS
+end
