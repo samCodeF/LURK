@@ -71,8 +71,9 @@ kind: DeployConfig
 metadata:
   name: lurk-app-deploy-config
 spec:
-  # Correct root_directory pointing to folder containing Metro config
-  root_directory: "."  # Points to project_1 directory containing metro.config.js
+  # Fixed root_directory pointing to folder containing Metro config
+  # Changed from 'frontend' to 'project_1' to resolve Metro bundler error
+  root_directory: "project_1"  # Points to project_1 directory containing metro.config.js
 
   # Application configuration
   app_config:
