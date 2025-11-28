@@ -367,10 +367,6 @@ curl https://api.lurk.app/health
 - **Sandbox**: Test environment for development
 - **Support**: dev-support@lurk.app
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
