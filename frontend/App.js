@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -29,6 +30,9 @@ import PremiumScreen from './src/screens/PremiumScreen';
 import OnboardingScreen from './src/screens/OnboardingScreen';
 import KYCScreen from './src/screens/KYCScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+
+// Import landing page for web
+import LandingPage from './src/landing/LandingPage';
 
 // Import services
 import { NotificationService } from './src/services/NotificationService';
@@ -231,6 +235,17 @@ const App = () => {
   // Loading screen while checking auth
   if (isLoading) {
     return <SplashScreen />;
+  }
+
+  // Check if we're on web platform - show landing page
+  if (Platform.OS === 'web') {
+    return (
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <LandingPage />
+        </ThemeProvider>
+      </Provider>
+    );
   }
 
   return (
