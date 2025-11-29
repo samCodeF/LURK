@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "react-native start",
+    "start:reset": "react-native start --reset-cache",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "react-native-web start",
@@ -12,6 +13,7 @@
     "build:ios": "react-native run-ios --configuration Release",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "clean": "react-native clean",
     "clean:android": "cd android && ./gradlew clean",
     "clean:ios": "cd ios && xcodebuild clean"
@@ -51,7 +53,7 @@
     "react-native-modal": "^13.0.1",
     "react-native-gesture-bottom-sheet": "^1.1.0",
     "react-native-plaid-link-sdk": "^11.5.0",
-    "@razorpay/react-native-razorpay": "^1.1.8",
+    "react-native-razorpay": "1.1.8",
     "@stripe/stripe-react-native": "^0.35.0",
     "react-native-share": "^9.4.1",
     "react-native-rate": "^1.2.12",
