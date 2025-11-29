@@ -7,9 +7,9 @@ import React from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {Card, Button, FAB} from 'react-native-paper';
 
-import IconComponent from '../components/IconComponent';
-import {CreditCardIcons, BankIcons} from '../constants/icons';
-import {colors} from '../constants/theme';
+import IconComponent from '@/components/IconComponent';
+import {CreditCardIcons, BankIcons} from '@/constants/icons';
+import {colors} from '@/constants/theme';
 
 const CardsScreen = () => {
   const mockCards = [

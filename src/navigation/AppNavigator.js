@@ -4,16 +4,17 @@
  */
 
 import React from 'react';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Provider as PaperProvider} from 'react-native-paper';
 
 // Screens
-import HomeScreen from '../screens/HomeScreen';
-import CardsScreen from '../screens/CardsScreen';
-import AnalyticsScreen from '../screens/AnalyticsScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import HomeScreen from '@/screens/HomeScreen';
+import CardsScreen from '@/screens/CardsScreen';
+import AnalyticsScreen from '@/screens/AnalyticsScreen';
+import ProfileScreen from '@/screens/ProfileScreen';
 
 // Icons
 import IconComponent from '../components/IconComponent';

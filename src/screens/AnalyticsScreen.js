@@ -7,9 +7,9 @@ import React from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {Card, Button} from 'react-native-paper';
 
-import IconComponent from '../components/IconComponent';
-import {FinancialIcons, StatusIcons} from '../constants/icons';
-import {colors} from '../constants/theme';
+import IconComponent from '@/components/IconComponent';
+import {FinancialIcons, StatusIcons} from '@/constants/icons';
+import {colors} from '@/constants/theme';
 
 const AnalyticsScreen = () => {
   const mockAnalytics = {

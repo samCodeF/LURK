@@ -30,16 +30,12 @@ const config = {
       },
     }),
   },
-  // Configure file extensions
+  // Configure source extensions
   sourceExts: ['js', 'jsx', 'ts', 'tsx', 'json'],
   // Configure asset extensions
   assetExts: ['png', 'jpg', 'jpeg', 'gif', 'svg', 'ttf', 'otf'],
   // Maximum worker count
   maxWorkers: 4,
-  // Enable source maps in development
-  devServer: {
-    https: false,
-  },
 };
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);
